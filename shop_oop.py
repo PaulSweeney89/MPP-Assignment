@@ -136,8 +136,8 @@ class newCustomer(Customer):
         the command line
         """
         self.shopping_list=[]
-        self.name = input("New Customer, please enter your name: ")
-        self.budget = float(input("Please enter your budget: "))
+        self.name = input("New Customer, please enter your name: ")         # prompt user to input new customer name
+        self.budget = float(input("Please enter your budget: "))            # prompt user to input new customer budget
 
     def new_shopping_list(self, stock_list):
         """
@@ -146,37 +146,38 @@ class newCustomer(Customer):
         Parameters:
             -stock_list : shop ProductStock list
         """
-        available_items = []
-        for item in stock_list:
-            available_items.append(item.name())
+        available_items = []                                                # create a list of the available stock items
+        for item in stock_list:                                             # loop through items in shop stock list &
+            available_items.append(item.name())                             # append to available stock list
 
-        cust_prod = input("Enter a product name: ")  
+        cust_prod = input("Enter a product name: ")                         # prompt user to input product name
 
-        if cust_prod in available_items:
-            for item in stock_list:
-                if cust_prod == item.name():
-                    qty = item.quantity
+        if cust_prod in available_items:                                    # if input customer product is available
+            for item in stock_list:                                         # loop through items in stock list &
+                if cust_prod == item.name():                                # identify product & quantity available
+                    qty = item.quantity                                     
             p = Product(cust_prod)
-        else:
+        else:                                                               # notify user if input product is not available
             print("Product Not Available")
             return None
 
-        cust_qty = int(input("Enter quantity: "))
+        cust_qty = int(input("Enter quantity: "))                           # prompt user for to input quantity of products
 
-        if cust_qty <= qty:
+        if cust_qty <= qty:                                                 # check if quantity of products is available
             q = cust_qty
             ps = ProductStock(p, q)
         else:
-            print("Product Quantity Not Available")
+            print("Product Quantity Not Available")                         # notify user if quantity is not available
             return None
 
-        self.shopping_list.append(ps)
+        self.shopping_list.append(ps)                                       # append available products & quantities to new customer shopping list
         
 
 class Shop:
     """
     Customer Class to store customer's details, budget & shopping list info
     """
+
     def __init__(self, path):
         """
         Method to initialize the object with info imported from a csv file
@@ -192,6 +193,18 @@ class Shop:
                 p = Product(row[0], float(row[1]))
                 ps = ProductStock(p, int(row[2]))
                 self.stock.append(ps)
+
+    def update_cash(self, sold):
+        """
+        Method to update shop cash
+        """
+        self.cash += sold
+
+    def update_stock(self, sold_items):
+        for sold in sold_items:
+            for stock_item in self.stock:
+                if (stock_item.name() == sold.name()):
+                    stock_item.quantity -= sold.quantity
 
     def __repr__(self):
         """
@@ -229,7 +242,16 @@ def main():
             c.calculate_costs(s.stock)	
             print(c)
 
-            print(f'\n\t\tTotal Cost: \t{c.order_cost()}\n')
+            bill = c.order_cost()
+        
+            print(f'\n\t\tTotal Cost: \t{bill}\n')
+
+            if c.budget < bill:
+                print("Customer has insufficenet Funds - ORDER NOT PROCESSED")
+            else:
+                s.update_cash(bill)
+                s.update_stock(c.shopping_list)
+                # print(s)
             
             app_display()
 
@@ -247,7 +269,17 @@ def main():
                 choice = input("Would you like to pay <p> or continue shopping <c>?")
                 
             print(nc)
-            print(f'\n\t\tTotal Cost: \t{nc.order_cost()}\n')
+
+            bill = nc.order_cost()
+
+            print(f'\n\t\tTotal Cost: \t{bill}\n')
+
+            if nc.budget < bill:
+                print("Customer has insufficenet Funds - ORDER NOT PROCESSED")
+            else:
+                s.update_cash(bill)
+                s.update_stock(nc.shopping_list)
+                # print(s)
 
             app_display()
 
