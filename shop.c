@@ -1,22 +1,26 @@
 // # c Shop Program
 // MULTI-PARADIGM PROGRAMMING 2021
 
+// libaries
 # include <stdio.h>
 # include <string.h>
 # include <stdlib.h>
 
 // Define the program structure types 
 
+// Product Class to store product info
 struct Product {
     char* name;
     double price;
 };
 
+// ProductStock Class to store the product stock info
 struct ProductStock {
     struct Product product;
     int quantity;
 };
 
+// Customer Class to store the customer details & shopping list info
 struct Customer {
     char* name;
     double budget;
@@ -24,6 +28,7 @@ struct Customer {
     int index;
 };
 
+// Shop Class to store the shop cash & product stock list
 struct Shop {
     double cash;
     struct ProductStock stock[20];
@@ -33,9 +38,7 @@ struct Shop {
 
 // Define the program methods
 
-/*
- * Function to retrieve & return shop product stock from csv file
- */
+// Function to retrieve & return shop product stock from csv file
 struct Shop createAndStockShop()
 {
     FILE * fp;
@@ -43,7 +46,7 @@ struct Shop createAndStockShop()
     size_t len = 0;
     ssize_t read;
 
-    fp = fopen("stock.csv", "r");
+    fp = fopen("../stock.csv", "r");
     if (fp == NULL)
         exit(EXIT_FAILURE);
 
@@ -69,9 +72,7 @@ struct Shop createAndStockShop()
 	return shop;
 }
 
-/*
- * Function to retrieve product name from shop stock
- */
+// Function to retrieve product name from shop stock
 struct Product getProduct(struct Shop s, char* pname)
 {
     struct Product p;
@@ -84,10 +85,7 @@ struct Product getProduct(struct Shop s, char* pname)
     return p;
 }
 
-
-/*
- * Function to retrieve & return Customer's details & shopping list from csv file
- */
+// Function to retrieve & return Customer's details & shopping list from csv file
 struct Customer readCustomer(struct Shop s)
 {
     FILE * fp;
@@ -95,7 +93,7 @@ struct Customer readCustomer(struct Shop s)
     size_t len = 0;
     ssize_t read;
 
-    fp = fopen("customer.csv", "r");
+    fp = fopen("../customer.csv", "r");
     if (fp == NULL)
         exit(EXIT_FAILURE);
 
@@ -122,6 +120,7 @@ struct Customer readCustomer(struct Shop s)
 	return customer;
 }
 
+// Function to calculate the customer's bill
 double calcBill(struct Customer c)
 {
     float bill = 0;
@@ -133,10 +132,7 @@ double calcBill(struct Customer c)
     return bill;
 }
 
-
-/*
- * Function to output the product's name & price
- */
+// Function to output the product's name & price
 void printProductName(struct Product p)
 {
     printf("%s", p.name);
@@ -147,10 +143,7 @@ void printProduct(struct Product p)
     printf("%s %.2f", p.name, p.price);
 }
 
-
-/*
- * Function to output the Customer's name, budget, shopping list & cost
- */
+// Function to output the Customer's name, budget, shopping list & cost
 void printCustomer(struct Customer c)
 {
     printf("CUSTOMER NAME: %s \nBudget: €%.2f\n", c.name, c.budget);
@@ -170,10 +163,7 @@ void printCustomer(struct Customer c)
     }
 }
 
-
-/*
- * Function to output the shops cash reserve & product stocklist
- */
+// Function to output the shops cash reserve & product stocklist
 void printShop(struct Shop s){
 
     printf("SHOP CASH: %.2f", s.cash);
@@ -194,8 +184,7 @@ void printShop(struct Shop s){
 
 void app_display(struct Shop s)
 {    
-    struct Customer c = readCustomer(s);
-    // printCustomer(c);
+    // struct Customer c = readCustomer(s);
 
     printf("%20s", "");
     printf("| MENU |");
@@ -212,10 +201,12 @@ void app_display(struct Shop s)
 		printf("\nPlease choose an option ");
 		scanf("%d", &choice);
 
+        // Choice 1 - Import Customer's Details & Shopping List
 		if (choice == 1)
 		{
 			printf("Import Customer's Details & Shopping List");									
             printf("\n=========================================\n");
+
             struct Customer c = readCustomer(s);
             printCustomer(c);
 
@@ -232,6 +223,7 @@ void app_display(struct Shop s)
             }
 		} 
 
+        // Choice 2 - Live Mode
         else if (choice == 2)
         {
             struct Customer newCust;
@@ -291,7 +283,6 @@ void app_display(struct Shop s)
                 newCust.index++;
             }
 
-
             printCustomer(newCust);
 
             float bill = calcBill(newCust);
@@ -307,7 +298,7 @@ void app_display(struct Shop s)
             }            
         }
 
-
+        // Choice 3 - Check Shop Stock
         else if (choice == 3)
         {
             printf("Check Shop Stock");							
@@ -316,6 +307,7 @@ void app_display(struct Shop s)
             printShop(s);
 		} 
 
+        // Choice 4 - Close Program
         else if (choice == 4)
         {
             printf("Close Program");
@@ -324,22 +316,11 @@ void app_display(struct Shop s)
     }
 }
 
-
-
 // Program main method
 int main(void)
 {
-
     struct Shop s = createAndStockShop();
-    // printShop(s);
-
     app_display(s);
-
     struct Customer c = readCustomer(s);
-    // float bill = calcBill(c);
-    // printf("%f", bill);
-    // printCustomer(c);
-
-
     return 0;
 }

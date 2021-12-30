@@ -40,7 +40,7 @@ class ProductStock:
     
     def name(self):
         """
-        Method to return product name
+        Method to return product name`
         """
         return self.product.name;
     
@@ -175,14 +175,14 @@ class newCustomer(Customer):
 
 class Shop:
     """
-    Customer Class to store customer's details, budget & shopping list info
+    Shop Class to store shop's cash & stock list info
     """
 
     def __init__(self, path):
         """
         Method to initialize the object with info imported from a csv file
         Parameters:
-            -path : file path to customer csv file
+            -path : file path to shop csv file
         """
         self.stock = []
         with open(path) as csv_file:
@@ -227,8 +227,8 @@ def main():
     """
     print("WELCOME TO THE SHOP")
     app_display()	
-    s = Shop("stock.csv")
-    c = Customer("customer.csv")
+    s = Shop("../stock.csv")
+    c = Customer("../customer.csv")
     								
 
     while True:

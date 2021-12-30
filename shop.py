@@ -10,34 +10,48 @@ import csv
 
 @dataclass
 class Product:
+    """
+    Product Class to store product info
+    """
     name: str
     price: float = 0.0
 
 @dataclass
 class ProductStock:
+    """
+    ProductStock Class to store the product stock info
+    """
     product: Product
     quantity: int
 
 @dataclass
 class Shop:
+    """
+    Shop Class to store the shop cash & product stock list
+    """
     cash: float = 0.0
     stock: List[ProductStock] = field(default_factory=list)
 
 @dataclass
 class Customer:
+    """
+    Customer Class to store the customer details & shopping list info
+    """
     name: str
     budget: float = 0.0
     shopping_list: List[ProductStock] = field(default_factory=list)
 
 # Define the program methods
 
-def create_and_stock_shop():
+def create_and_stock_shop(file_path):
     """
     Function to retrieve & return shop product stock
     from the 'stock.csv' file
+    Parameters:
+            -file_path : file path to stock.csv file
     """
     s = Shop()
-    with open('stock.csv') as csv_file:
+    with open(file_path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         header_row = next(csv_reader)                           # skip header row at start of 'for loop'
         s.cash = float(header_row[0])                           # shop cash reserve
@@ -52,6 +66,8 @@ def read_customer(file_path):
     """
     Function to retrieve the Customer's name, budget & 
     shopping list from the 'customer.csv' file
+    Parameters:
+            -file_path : file path to customer.csv file
     """
     with open(file_path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -69,21 +85,25 @@ def get_product_price(prod_name):
     """
     Function to retrieve the product price for inputted 
     product name from the stock csv file
+    Parameters:
+            -prod_name : product name input
     """
-    with open('stock.csv') as csv_file:
+    with open('../stock.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for row in csv_reader:
             if prod_name == row[0]:                             
                 price = float(row[1])
-                return price
+                return price   
 
 
 def get_product_qty(prod_name):
     """
     Function to retrieve the product quantity for inputted 
     product name from the stock csv file
+    Parameters:
+            -prod_name : product name input
     """
-    with open('stock.csv') as csv_file:
+    with open('../stock.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for row in csv_reader:
             if prod_name == row[0]:
@@ -94,10 +114,13 @@ def get_product_qty(prod_name):
 def check_product_stock(prod_name):
     """
     Function to check the product stock
-    - returns True if product available 
-    - returns False if product not available
+    Parameters:
+            -prod_name : product name input
+    Returns:
+        - True if product available 
+        - False if product not available
     """
-    with open('stock.csv') as csv_file:
+    with open('../stock.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for row in csv_reader:
             if prod_name == row[0]:
@@ -125,7 +148,9 @@ def input_quantity(prod_name):
     """
     Function to prompt user to input Quantity in Live
     checks input quantity against available stock quantity for 
-    the input product name 
+    the input product name
+    Parameters:
+            -prod_name : product name input 
     """
     while True:
         try:
@@ -141,6 +166,8 @@ def input_quantity(prod_name):
 def calc_bill(c):
     """
     Function to calculate Customer's total bill
+    Parameters:
+            -c : Customer Class Object
     """
     costs = []                                                      # list of product costs
     for item in c.shopping_list:                                    # loop through items in shopping list
@@ -156,6 +183,9 @@ def update_stock(customer, shop):
     """
     Function to reduce shop stock quantities 
     by number of products sold
+    Parameters:
+            -customer : Customer Class Object
+            -shop : Shop Class Object
     """
     for item in customer.shopping_list:                             # loop through items in customer's shopping list
         stk_qty = get_product_qty(item.product.name)                # get shop product current stock quantity
@@ -169,6 +199,8 @@ def update_stock(customer, shop):
 def print_product(p):
     """
     Function to output the product's name & price
+    Parameters:
+            -p : Product Class Object
     """
     print(f'Product Name: {p.name} Product Price: {p.price}')
 
@@ -177,6 +209,8 @@ def print_customer(c):
     """
     Function to output the customer's name, shopping list
     & total cost spent
+    Parameters:
+            -c : Customer Class Object
     """
     print(f'CUSTOMER NAME: {c.name}')
     print(f'BUDGET: €{c.budget}')
@@ -193,6 +227,8 @@ def print_customer(c):
 def print_shop(s):
     """
     Function to output the shop's cash reserve & product stock list
+    Parameters:
+            -s : Shop Class Object
     """
     print(f'SHOP CASH: {s.cash} \n')
     print("SHOP PRODUCT STOCK LIST:")
@@ -210,7 +246,7 @@ def main():
     """
     print("WELCOME TO THE SHOP")
     app_display()	
-    open_shop = create_and_stock_shop()										
+    open_shop = create_and_stock_shop('../stock.csv')										
 
     while True:
         choice = input("Choice: ")
@@ -221,7 +257,7 @@ def main():
             print("=" * 41)
 
             # read customer from csv file
-            customer = read_customer("customer.csv")
+            customer = read_customer("../customer.csv")
             # output customer details
             print_customer(customer)
 
